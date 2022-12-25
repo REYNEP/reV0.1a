@@ -1,5 +1,8 @@
 # :𝐫𝐞
 
+### The code in a nutshell.... (initial commit 😜)
+![WHATEVER](0.1a/re.png)
+
 - Dress (Galib Vai....)
 - Script (Cold)
 - Shots (Cold. Teal & Orange, like the Peripherial)

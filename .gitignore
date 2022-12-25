@@ -1,1 +1,11 @@
-/build
+build
+build-x64
+
+/*.zip
+*.exe
+re.exe
+
+/re
+/dasoku
+
+.vscode
