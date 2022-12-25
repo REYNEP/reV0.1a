@@ -1,0 +1,6 @@
+[submodule "amGHOST"]
+	path = amGHOST
+	url = https://www.github.com/REYNEP/amGHOST
+[submodule "amVK"]
+	path = amVK
+	url = https://www.github.com/REYNEP/amVK
