@@ -1,4 +1,5 @@
 #include "2D_Quad.hh"
+#include "2D_Image.hh"
 
 #include "amGHOST_V.hh"
 #include "KeyMiceInput/EK.hh"
@@ -11,6 +12,7 @@
 //#include "amVK_Pipeline.hh"
 
 #include "amVK_RendererT1.hh"
+#include "amGHOST_Decode.hh"
 
 
 /**
@@ -64,8 +66,9 @@ int main(void) {
     amVK_GraphicsPipes *amVK_PS = new amVK_GraphicsPipes(amVK_RP, amVK_D);          // This is like a 'Pipe'Store... where you build PipeLines from
     amVK_PS->konfigurieren();                                                       // Basic Configuration.... Still Modifiable.... 😉
     
-    Quad2D::pipeline.Initialize(amVK_PS);                                          // TODO: HANDLE Destruction
-    Quad2D aQuad = Quad2D();
+    Image2D::pipeline.Initialize(amVK_PS);                                          // TODO: HANDLE Destruction
+    Image2D aQuad = Image2D();
+    amGHOST_DEC_PNG IMG("amGHOST/reynep.png");                                      // uses WUFFs by google 🙃
 
 
 
@@ -83,7 +86,7 @@ int main(void) {
         //if (i == 0) vkCmdCopyBufferToImage(RD.m_cmdBuf.BUF, B.BUFFER, I.IMG, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, )
 
         vkCmdSetViewport(RD.m_cmdBuf.BUF, 0, 1, &xD);
-        aQuad.Draw(RD.m_cmdBuf.BUF);                                                // This is more Like RenderKonsument....
+        aQuad.Draw(RD.m_cmdBuf.BUF, nullptr);                                       // This is more Like RenderKonsument....
                                                                                     // Like it isn't getting drawn RN
         
         RD.EndRecord_N_Submit();                                                    // This Too 😊
