@@ -7,6 +7,6 @@ layout(set = 0, binding = 0) uniform sampler2D U_Image;
 
 void main()
 {
-    //outFragColor = vec4(texture(U_Image, I_TextureUV).xyz, 1.0f);
-    outFragColor = vec4(I_TextureUV, 1.0f, 1.0f); // 😜
+    outFragColor = vec4(texture(U_Image, I_TextureUV).xyz, 1.0f);
+   // outFragColor = vec4(I_TextureUV, 1.0f, 1.0f); // 😜
 }

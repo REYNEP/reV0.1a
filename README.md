@@ -3,6 +3,9 @@
 ### The code in a nutshell.... (initial commit 😜)
 ![WHATEVER](0.1a/re.png)
 
+### You would need to run `amVK/make.py` & `amGHOST/make.py` to download external-libs
+### also `git submodule init` & `git submodule update`
+
 - Dress (Galib Vai....)
 - Script (Cold)
 - Shots (Cold. Teal & Orange, like the Peripherial)

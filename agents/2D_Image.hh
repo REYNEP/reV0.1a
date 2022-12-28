@@ -1,5 +1,6 @@
 #include "amVK_Pipeline.hh"
 #include "amVK_Descriptors.hh"
+#include "amVK_ImgNBuf.hh"
 
 /** Don't create multiple pipelines.... from same shaders */
 class Image2D_Pipeline : public amVK_Pipeline {
@@ -41,6 +42,8 @@ class Image2D_Pipeline : public amVK_Pipeline {
 class Image2D {
     public:
     static inline Image2D_Pipeline pipeline;
+    static inline VkSampler Def_Sampler = nullptr;
+    VkDescriptorSet DS;
     
     float mat4[16] = {
         1.0, 0.0, 0.0, 0.0,
@@ -49,13 +52,36 @@ class Image2D {
         0.0, 0.0, 0.0, 1.0
     };
 
-     Image2D() {}
-    ~Image2D() {}
+    Image2D() {}
+   ~Image2D() {}
 
-    void Draw(VkCommandBuffer CMD, VkDescriptorSet *DS) {
+    /** You can set your own   VkSampler.... */
+    void ReadyDS(amVK_DeadPool *DeadPool, BufferMK2 B, ImageMK2 I, bool UpdateOnly = false) {
+        if (!UpdateOnly)
+            DS = DeadPool->Allocate_Single(pipeline.IMG_DSetLayout.L);
+        if (!Def_Sampler)
+            Def_Sampler = ImageMK2::amvkCreateSampler(DeadPool->amVK_D);
+
+
+        VkDescriptorBufferInfo BI = {
+            B.BUFFER, B.m_sizeByte, B.m_memOffset
+        };
+        VkDescriptorImageInfo II = {
+            Def_Sampler, I.VIEW, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+        };
+        VkWriteDescriptorSet WriteSet = {VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, nullptr,
+            DS,         /** dstSet */
+            0, 0,       /** dstBinding, dstArrayElement */
+            1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+            &II, &BI, nullptr /** pImageInfo, pBufferInfo, pTexelBufferView */
+        };
+        vkUpdateDescriptorSets(DeadPool->amVK_D->D, 1, &WriteSet, 0, nullptr);
+    }
+
+    void Draw(VkCommandBuffer CMD) {
         const uint32_t offset = 0;
         vkCmdBindPipeline(CMD, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.P);
-        //vkCmdBindDescriptorSets(CMD, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.layout, 0, 1, DS, 1, &offset);
+        vkCmdBindDescriptorSets(CMD, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.layout, 0, 1, &DS, 0, nullptr);
         vkCmdDraw(CMD, 6, 1, 0, 0);     // TriangleStrip
     }
 };
