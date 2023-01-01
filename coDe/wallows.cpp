@@ -1,3 +1,4 @@
+#define WALLOWS
 #include "2D_Quad.hh"
 #include "2D_Image.hh"
 
@@ -46,17 +47,17 @@
  * https://www.youtube.com/watch?v=Rol0iKEXk_8
  */
 int main(void) {
-    amGHOST_Window *wOne = amG_SYS->create_window(":𝐫𝐞", 0, 0, 1280, 720);          //GHOST - Generic Handy Operating System Toolkit 👻
+    amGHOST_Window *wOne = amG_SYS->create_window(":𝐫𝐞", 0, 0, 600, 600);           //GHOST - Generic Handy Operating System Toolkit 👻
     amG_SYS->add_EventKonsument(&EK);                                               // EK   - Event Konsument. xD (German)
                                                                                     // Your own Function to process amGHOST Event (OS Events)
-    amVK_InstanceMK2 *amVK = new amVK_InstanceMK2(true);                            // true: Debug Extensions
+    amVK_InstanceMK2 *amVK = new amVK_InstanceMK2(true);                            // true: Debug Extensions   
     amVK->Create_VkInstance();                                                      // Vulkan Extension Created
     // add_InstanceExt('VK_EXT_swapchain_colorspace')                               // Check amVK_Classes to see features/functions like this
-
-    amVK_SurfaceMK2     *amVK_S = new amVK_SurfaceMK2(wOne->create_vulkan_surface(amVK->s_Instance));           // GHOST Creates VkSurface
+                                                                                    // GHOST Creates VkSurface
+    amVK_SurfaceMK2     *amVK_S = new amVK_SurfaceMK2(wOne->create_vulkan_surface(amVK->s_Instance));           
     amVK_DeviceMK2      *amVK_D = new amVK_DeviceMK2(amVK_S->select_DisplayDevice(), 1, 0, amVK_DP_GRAPHICS);
-    amVK_D->Create_VkDevice();
-    amVK_D->Activate_Device();      // Now, it'll be okay if you dont pass amVK_D everywhere
+    amVK_D->Create_VkDevice();                                                      // amVK_ARRAY_PUSH_BACK(amVK_D.exts) = "VK_KHR_VIDEO_DECODE";
+    amVK_D->Activate_Device();                                                      // Now, it'll be okay if you dont pass amVK_D everywhere
 
     
 
@@ -65,8 +66,9 @@ int main(void) {
 
     amVK_WI_MK2        *amVK_WI = new amVK_WI_MK2(":𝐫𝐞", amVK_S, amVK_RP, amVK_D);  // WI    - Window Interface    [highly modifiable]
     amVK_WI->Create_Swapchain();                                                    // see the class header, Lots of features...
-    amVK_WI->create_Attachments();                                                  // Attachments & Framebuffers....
+    amVK_WI->create_Attachments();                                                  // Attachments & Framebuffers....       [for ReCreating Swapchain \fn 'CleanUp_Swapchain()' should be called]
     amVK_WI->create_Framebuffers();                                                 // Cool enough implementation for now [amVK_Array Used]
+    wOne->window_userData = amVK_WI;                                                // \see EK.hh           [The purpose of amVK should be as if like we dont have to create a re_Window thingy]
 
 
 
@@ -75,19 +77,17 @@ int main(void) {
     amVK_DeadPool     *DeadPool = new amVK_DeadPool(amVK_D);                        // DescriptorPool   [+++]
     DeadPool->Create();                                                             // TODO: A Better way to create... sInfo
 
-    
     Image2D::pipeline.Initialize(amVK_PS);                                          // TODO: HANDLE Destruction
     Image2D aQuad = Image2D();
-    REY_InYourMind REYNEP("amGHOST/reynep.png");                                    // uses WUFFs by google 🙃
+    REY_InYourMind REYNEP("amGHOST/reynep.png", 1);                                 // uses WUFFs by google 🙃
 
     amVK_ImgNBuf_Kernal::Set_Device(amVK_D);                                        // For now BufferMK2 & ImageMK2 is in beta stage... sooo this is how we set this...
-    ImageMK2  I = {};
-    BufferMK2 B = {};                                                               // For Now we don't wanna use TRANSFER_SRC (STORAGE_TEXEL vs UNIFORM_TEXEL)
+    amVK_ImageMK2  I = {};
+    amVK_BufferMK2 B = {};                                                          // For Now we don't wanna use TRANSFER_SRC (STORAGE_TEXEL vs UNIFORM_TEXEL)
     B.Create(REYNEP.m_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT);                      // Allocates VkMemory
     B.CopyFrom(REYNEP.m_ptr);                                                       // vkMap, memcpy, vkUnmap       (instead of memcpy, directly decode image into it)    + Free INYOURMIND
     I.amvkCreateImage(VK_FORMAT_R8G8B8A8_SRGB, REYNEP.m_width, REYNEP.m_height);    // vkCreateImage, vkBindImageMemory(B), vkCreateImageView
     aQuad.ReadyDS(DeadPool, B, I);                                                  // Alloc DescriptorSet, CreateSampler, WriteDescriptorSet
-
 
 
 
@@ -105,7 +105,6 @@ int main(void) {
 
 
 
-
     Lautaro_Martinez RD(amVK_D);                                                    // RD: Render
     RD.Lautaro_ThePlan(amVK_D->get_graphics_queue());
     RD.Enzo_ThePlan(
@@ -113,9 +112,13 @@ int main(void) {
         VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT, VK_FENCE_CREATE_SIGNALED_BIT
     );                                                                              // Soon, you will prolly need to rewrite this class
     VkViewport xD = {0, 0, amVK_WI->extent.width, amVK_WI->extent.height, 0, 1};
+    VkRect2D HOGA = {{0, 0}, {amVK_WI->extent.width, amVK_WI->extent.height}};
 
     while(true) {
         amG_SYS->process_events(true);                                              // amGHOST processed all events and puts in QUEUE
+        xD.width = amVK_WI->extent.width;
+        xD.height = amVK_WI->extent.height;
+        HOGA.extent = {amVK_WI->extent.width, amVK_WI->extent.height};
         if (amG_SYS->dispatch_events() == false) {                                  // Calls that 'EK' from line 2 for every event
             break;                                                                  // Your EK can return '-1'
         }                                                                           // If it does so... dispatch_events() return false
@@ -125,6 +128,7 @@ int main(void) {
         //if (i == 0) vkCmdCopyBufferToImage(RD.m_cmdBuf.BUF, B.BUFFER, I.IMG, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, )
 
         vkCmdSetViewport(RD.ActiveCMDBuf, 0, 1, &xD);
+        vkCmdSetScissor(RD.ActiveCMDBuf, 0, 1, &HOGA);
         aQuad.Draw(RD.ActiveCMDBuf);                                                // This is more Like RenderKonsument....
                                                                                     // Like it isn't getting drawn RN
         

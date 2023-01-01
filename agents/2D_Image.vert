@@ -28,18 +28,18 @@ const vec2 positions[6] = vec2[6](
 );
 
 const vec2 uv[6] = vec2[6](
-    vec2( 0.0f, 1.0f),  // 0
-    vec2( 0.0f, 0.0f),  // 1
-    vec2( 1.0f, 0.0f),  // 2
+    vec2( 0.0f, 0.0f),  // 0
+    vec2( 0.0f, 1.0f),  // 1
+    vec2( 1.0f, 1.0f),  // 2
 
-    vec2( 1.0f, 0.0f),  // 2
-    vec2( 1.0f, 1.0f),  // 3
-    vec2( 0.0f, 1.0f)   // 0
+    vec2( 1.0f, 1.0f),  // 2
+    vec2( 1.0f, 0.0f),  // 3
+    vec2( 0.0f, 0.0f)   // 0
 );
 
-layout (location = 0) out vec2 I_TextureUV;
+layout (location = 0) smooth out vec2 Interpolated_UV;
 
 void main() {
     gl_Position = vec4(positions[gl_VertexIndex], 0.0f, 1.0f);
-    I_TextureUV = uv[gl_VertexIndex];
+    Interpolated_UV = uv[gl_VertexIndex];
 }

@@ -56,11 +56,11 @@ class Image2D {
    ~Image2D() {}
 
     /** You can set your own   VkSampler.... */
-    void ReadyDS(amVK_DeadPool *DeadPool, BufferMK2 B, ImageMK2 I, bool UpdateOnly = false) {
+    void ReadyDS(amVK_DeadPool *DeadPool, amVK_BufferMK2 B, amVK_ImageMK2 I, bool UpdateOnly = false) {
         if (!UpdateOnly)
             DS = DeadPool->Allocate_Single(pipeline.IMG_DSetLayout.L);
         if (!Def_Sampler)
-            Def_Sampler = ImageMK2::amvkCreateSampler(DeadPool->amVK_D);
+            Def_Sampler = amVK_ImageMK2::amvkCreateSampler(DeadPool->amVK_D);
 
 
         VkDescriptorBufferInfo BI = {

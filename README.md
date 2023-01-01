@@ -32,3 +32,12 @@
 
 - SO I think we can just do that vkCmdCopyBufferToImage straight away... without TRANSFER COMMAND BUFFER
 - + WE can fix image FIT... in shader 😁
+
+- Problems... and Guides on how to fix thems.... (We just wanna list down the things that can go wrong....)
+    - RENDER_AREA is smaller than Window
+        - Check SHADER code.... is it wrong or smth weird?  [IF You aren't sure TRY Rendering a QUAD....]
+        - Check VertexData.... maybe you decoded them wrong.... or converted them wrong, [e.g. BIG-ENDIAN / LITTLE-ENDIAN]
+        - [ME NOT SURE] but Wrong DescriptorSet or VKBuffer???
+        - Check Pipeline for DYNAMIC Viewport/Scissor....   [IF You are using those.... turn of Scissor.... check if `vkCmdSetViewport` is set RIGHT]
+        - Check Swapchain & FrameBuffer sizes....
+        - One time I was getting this Problem was when I did VkCmdSetScissors... but those weren't being updated
