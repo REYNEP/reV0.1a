@@ -1,5 +1,6 @@
 build
 build-x64
+/out
 
 /*.zip
 *.exe
@@ -9,3 +10,4 @@ re.exe
 /dasoku
 
 .vscode
+.vs

@@ -3,7 +3,6 @@
 /** Dont create multiple pipelines.... from same shaders */
 class Quad2D_Pipeline : public amVK_Pipeline {
     public:
-    /** Features: TRIs_STRIP */
     char *shader = "agents/2D_Quad"; 
 
     Quad2D_Pipeline() {}
@@ -20,7 +19,6 @@ class Quad2D_Pipeline : public amVK_Pipeline {
 
 
 /** Initialize the pipeline before using */
-// TODO: vkCmdDraw dont use 6, use 4.... 😉  Tri-Strip
 class Quad2D {
     public:
     static inline Quad2D_Pipeline pipeline;

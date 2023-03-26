@@ -40,7 +40,9 @@ project(re VERSION 0.1)
 
 # --------------------
 set(SRC
-  coDe/wallows.cpp
+  "coDe/wallowsV2.cpp"
+  #coDe/Gavi/T1.cpp
+  #coDe/dayglow.cpp
 )
 
 set(INC

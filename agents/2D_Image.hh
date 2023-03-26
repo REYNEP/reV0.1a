@@ -21,7 +21,7 @@ class Image2D_Pipeline : public amVK_Pipeline {
     bool Initialize(amVK_GraphicsPipes *PS) {
         
         if (!IMG_DSetLayout.Create(PS->amVK_D, 1, &Binding)) {
-            amVK_LOG_EX("[Image2D_Pipeline]:    amVK_DSetLayout.Create() failed....!");
+            amVK_LOG_EX("[Agent_Image2D_Pipeline]:    amVK_DSetLayout.Create() failed....!");
         }
 
         amVK_Pipeline::Build_4_Device(shader, PS); 
@@ -39,7 +39,7 @@ class Image2D_Pipeline : public amVK_Pipeline {
 };
 
 /** Initialize the pipeline before using */
-class Image2D {
+class Agent_Image2D {
     public:
     static inline Image2D_Pipeline pipeline;
     static inline VkSampler Def_Sampler = nullptr;
@@ -52,8 +52,8 @@ class Image2D {
         0.0, 0.0, 0.0, 1.0
     };
 
-    Image2D() {}
-   ~Image2D() {}
+    Agent_Image2D() {}
+   ~Agent_Image2D() {}
 
     /** You can set your own   VkSampler.... */
     void ReadyDS(amVK_DeadPool *DeadPool, amVK_BufferMK2 B, amVK_ImageMK2 I, bool UpdateOnly = false) {

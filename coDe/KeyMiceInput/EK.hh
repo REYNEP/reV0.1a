@@ -3,18 +3,28 @@
 /** \param window_userData: TYPE: amVK_WI_MK2 */
 void fn_WindowResized(void *window_userData);
 
-int EK(amGHOST_Event *event) {          /** EventKonsument */
+/** Here as a Base reference haha */
+int EK_EX0(amGHOST_Event* event) {  /** EventKonsument */
     switch (event->m_type) 
     {
         case amGHOST_kWindowClose:
-            return -1;                  /** dispatch_events() will stop immediately, & return false */
-        case amGHOST_kWindowResized:
-            fn_WindowResized(event->m_win->window_userData);
+            return -1;              /* dispatch_events() will stop immediately, & return false */
     }
-    return 0;
 }
 
+int EK(amGHOST_Event* event);
+
 #ifdef WALLOWS
+    int EK(amGHOST_Event* event) {
+        switch (event->m_type) {
+        case amGHOST_kWindowClose:
+            return -1;
+        case amGHOST_kWindowResized:
+            fn_WindowResized(event->m_win->window_userData);
+        }
+        return 0;
+    }
+
     #include "amVK_WI.hh"
 
     /** Will it really be bad if we like have it inside the EK instead.... I mean after all that was the point of creating that EK thingy */
